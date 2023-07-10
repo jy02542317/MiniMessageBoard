@@ -2,7 +2,6 @@ package learning.java.minimessageboard.Services;
 
 import learning.java.minimessageboard.Entities.TbRoomEntity;
 import learning.java.minimessageboard.Repository.RoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,8 +13,11 @@ import java.util.List;
 @Service
 @Transactional
 public class RoomServices {
-    @Autowired
-    private RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
+
+    public RoomServices(RoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
+    }
 
     public List<TbRoomEntity> findAll(){
         return roomRepository.findAll();
@@ -26,7 +28,7 @@ public class RoomServices {
     }
 
     public TbRoomEntity getRoomById(Long Id){
-        return roomRepository.findById(Id).get();
+        return roomRepository.findById(Id).orElse(new TbRoomEntity());
     }
 
 

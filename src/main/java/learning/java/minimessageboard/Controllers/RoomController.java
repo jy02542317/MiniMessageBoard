@@ -1,12 +1,10 @@
 package learning.java.minimessageboard.Controllers;
 
+import jakarta.validation.Valid;
 import learning.java.minimessageboard.Entities.TbRoomEntity;
 import learning.java.minimessageboard.Services.RoomServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,11 +20,15 @@ public class RoomController {
     }
 
     @PostMapping("/saveRoom")
-    public TbRoomEntity saveRoom(TbRoomEntity tbRoomEntity){
+    public TbRoomEntity saveRoom(@Valid @RequestBody TbRoomEntity tbRoomEntity){
         return roomServices.saveRoom(tbRoomEntity);
     }
 
 
+    @PostMapping("/findById")
+    public TbRoomEntity findById(@RequestParam Long id){
+        return roomServices.getRoomById(id);
+    }
 
 
 }
