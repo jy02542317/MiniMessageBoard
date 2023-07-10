@@ -4,11 +4,13 @@ import learning.java.minimessageboard.Entities.TbUserEntity;
 import learning.java.minimessageboard.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserServices {
     @Autowired
     private UserRepository userRepository;

@@ -16,4 +16,6 @@ public class TbRoomEntity extends BaseEntity {
     @Column(name = "RoomName", nullable = false, length = 50)
     private String roomName;
 
+
+
 }
