@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,16 @@ public class RoomController {
     @PostMapping("/findAll/{page}")
     public Page<TbRoomEntity> findAll(@PathVariable("page") int page){
         PageRequest pageRequest=PageRequest.of(page,10);
-        Page<TbRoomEntity> list=roomServices.findAll(pageRequest);
-        return list;
+        return roomServices.findAll(pageRequest);
+    }
+
+    @DeleteMapping("/deleteRoom")
+    public void deleteUser(@RequestParam Long id) {
+        roomServices.deleteRoom(id);
+    }
+
+    @DeleteMapping("/deleteRoom")
+    public void deleteUsers(@RequestParam Long[] ids) {
+        roomServices.deleteRooms(Arrays.stream(ids).toList());
     }
 }
