@@ -6,8 +6,7 @@ import lombok.*;
 import java.util.List;
 
 @Builder
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

@@ -5,8 +5,7 @@ import lombok.*;
 
 
 @Builder
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -19,6 +18,9 @@ public class TbMessageEntity extends BaseEntity {
     @Basic
     @Column(name = "Message",  length = 250)
     private String message;
+    @Basic
+    @Column(name = "FileUrl",  length = 250)
+    private String fileUrl;
     @Basic
     @Column(name = "RoomId")
     private Integer roomId;
