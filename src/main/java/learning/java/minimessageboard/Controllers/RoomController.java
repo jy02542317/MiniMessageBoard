@@ -40,12 +40,12 @@ public class RoomController {
     }
 
     @DeleteMapping("/deleteRoom")
-    public void deleteUser(@RequestParam Long id) {
+    public void deleteRoom(@RequestParam Long id) {
         roomServices.deleteRoom(id);
     }
 
     @DeleteMapping("/deleteRooms")
-    public void deleteUsers(@RequestParam Long[] ids) {
+    public void deleteRooms(@RequestParam Long[] ids) {
         roomServices.deleteRooms(Arrays.stream(ids).toList());
     }
 }
