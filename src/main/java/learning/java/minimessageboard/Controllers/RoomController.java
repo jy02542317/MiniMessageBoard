@@ -35,7 +35,7 @@ public class RoomController {
 
     @PostMapping("/findAll/{page}")
     public Page<TbRoomEntity> findAll(@PathVariable("page") int page){
-        PageRequest pageRequest=PageRequest.of(page,10);
+        PageRequest pageRequest=PageRequest.of(page-1,10);
         return roomServices.findAll(pageRequest);
     }
 
