@@ -17,6 +17,9 @@ public class TbUserEntity extends BaseEntity{
     @Column(name = "UserName", nullable = true, length = 50)
     private String userName;
     @Basic
+    @Column(name = "Email", nullable = true, length = 50)
+    private String email;
+    @Basic
     @Column(name = "PassWord", nullable = true, length = 50)
     private String passWord;
 
@@ -25,7 +28,7 @@ public class TbUserEntity extends BaseEntity{
     private String inviteCode;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "r_user_role",joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<TbRoleEntity> roleList;//角色
