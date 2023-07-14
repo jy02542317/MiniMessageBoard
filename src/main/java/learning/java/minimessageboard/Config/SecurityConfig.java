@@ -47,7 +47,8 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeRequests().requestMatchers("/api/User/**").permitAll()
                 .requestMatchers("/api/Room/**").hasRole("ADMIN")
-                .requestMatchers("/api/Message/**").hasRole("USER")
+                .requestMatchers("/api/Message/**").permitAll()
+                .requestMatchers("/api/File/**").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

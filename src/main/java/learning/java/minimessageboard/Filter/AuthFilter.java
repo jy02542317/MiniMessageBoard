@@ -39,6 +39,9 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String uri = request.getRequestURI();
+
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final String authorizationHeader = request.getHeader("Authorization");
 

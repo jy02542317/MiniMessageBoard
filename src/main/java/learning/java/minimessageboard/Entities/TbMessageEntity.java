@@ -3,6 +3,8 @@ package learning.java.minimessageboard.Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 
 @Builder
 @Data
@@ -18,12 +20,11 @@ public class TbMessageEntity extends BaseEntity {
     @Basic
     @Column(name = "Message",  length = 250)
     private String message;
-    @Basic
-    @Column(name = "FileUrl",  length = 250)
-    private String fileUrl;
+
     @Basic
     @Column(name = "RoomId")
     private Integer roomId;
+
 
 
 }
