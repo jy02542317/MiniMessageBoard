@@ -45,9 +45,9 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(authFilter, BasicAuthenticationFilter.class);
         http.csrf().disable()
-                .authorizeRequests().requestMatchers("/api/auth/**").permitAll()
+                .authorizeRequests().requestMatchers("/api/User/**").permitAll()
                 .requestMatchers("/api/Room/**").hasRole("ADMIN")
-                .requestMatchers("/api/Message/**").hasRole("ADMIN")
+                .requestMatchers("/api/Message/**").hasRole("USER")
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

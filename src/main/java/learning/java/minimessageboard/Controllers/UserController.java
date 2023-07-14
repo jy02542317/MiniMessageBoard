@@ -34,7 +34,7 @@ public class UserController {
         return userServices.findAll();
     }
 
-    @PostMapping("/Login")
+    @PostMapping("/LogIn")
     public ResponseEntity<?> Login(@Valid @RequestBody LogInDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getUsername(), loginDto.getPassword()));
@@ -49,8 +49,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/SaveUser")
-    public ResponseEntity<?> createOrSaveEmployee(@Valid @RequestBody SignUpDto signupDto) {
+    @PostMapping("/SignUp")
+    public ResponseEntity<?> createOrSaveUser(@Valid @RequestBody SignUpDto signupDto) {
         return userServices.SaveUser(signupDto);
     }
 

@@ -68,8 +68,9 @@ public class UserServices implements UserDetailsService{
         userEntity.setPassWord(passwordEncoder(signupDto.getPassword()));
         if(signupDto.getIsAdmin())
         {
-            TbRoleEntity roles = roleRepository.findByRoleName("ROLE_ADMIN").get();
-            userEntity.setRoleList((List<TbRoleEntity>) Collections.singleton(roles));
+
+            List<TbRoleEntity> roles = roleRepository.findByRoleName("ROLE_ADMIN").stream().toList();
+            userEntity.setRoleList(roles);
         }
         userRepository.save(userEntity);
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);

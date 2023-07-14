@@ -20,7 +20,7 @@ public class TbUserEntity extends BaseEntity{
     @Column(name = "Email", nullable = true, length = 50)
     private String email;
     @Basic
-    @Column(name = "PassWord", nullable = true, length = 50)
+    @Column(name = "PassWord", nullable = true, length = 255)
     private String passWord;
 
     @Basic
