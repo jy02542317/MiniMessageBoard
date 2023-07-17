@@ -1,5 +1,6 @@
 package learning.java.minimessageboard.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class TBFileEntity extends BaseEntity{
     private String extension;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "Message_Id")
     private TbMessageEntity tbMessageEntity;
 }

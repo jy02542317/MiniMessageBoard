@@ -1,8 +1,12 @@
 package learning.java.minimessageboard.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,5 +30,8 @@ public class TbMessageEntity extends BaseEntity {
     private Integer roomId;
 
 
+
+    @OneToMany(mappedBy = "tbMessageEntity", fetch= FetchType.EAGER)
+    private List<TBFileEntity> fileList;
 
 }

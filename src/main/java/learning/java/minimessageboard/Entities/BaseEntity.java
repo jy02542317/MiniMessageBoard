@@ -18,7 +18,7 @@ public class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "Id", nullable = false)
-    private int id;
+    private Long id;
     @Basic
     @Column(name = "IsValid", nullable = false)
     private boolean isValid=true;
