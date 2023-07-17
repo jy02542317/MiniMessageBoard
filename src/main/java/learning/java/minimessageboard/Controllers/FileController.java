@@ -1,5 +1,7 @@
 package learning.java.minimessageboard.Controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import learning.java.minimessageboard.Entities.TBFileEntity;
 import learning.java.minimessageboard.Services.FileServices;
 import learning.java.minimessageboard.Services.MessageServices;
@@ -33,5 +35,11 @@ public class FileController {
             log.info("文件上传失败！");
         }
         return list;
+    }
+
+    @GetMapping("/download/downloadFile")
+    public void download(HttpServletRequest request, HttpServletResponse response,@RequestParam("id") Long id) throws IOException {
+        //下载
+         fileServices.downloadPathFile(request, response,id);
     }
 }

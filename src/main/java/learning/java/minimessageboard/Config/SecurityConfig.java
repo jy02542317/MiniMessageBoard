@@ -49,6 +49,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/Room/**").hasRole("ADMIN")
                 .requestMatchers("/api/Message/**").permitAll()
                 .requestMatchers("/api/File/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -27,7 +27,6 @@ public class RoomController {
         return roomServices.saveRoom(tbRoomEntity);
     }
 
-
     @PostMapping("/findById")
     public TbRoomEntity findById(@RequestParam Long id){
         return roomServices.getRoomById(id);
