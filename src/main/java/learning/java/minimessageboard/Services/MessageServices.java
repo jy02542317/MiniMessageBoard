@@ -47,7 +47,7 @@ public class MessageServices {
      * @return
      */
 
-    public Page<TbMessageEntity> findBrandSearch(String key, Integer pages, Integer rows,
+    /*public Page<TbMessageEntity> findBrandSearch(String key, Integer pages, Integer rows,
                                                  boolean desc, String sortBy) {
         ArrayList<String> strings = new ArrayList<>();
         PageRequest page;
@@ -88,8 +88,8 @@ public class MessageServices {
             }
         }, page);
         return list;
-    }
-}
+    }*/
+/*}*/
 
 
 }
