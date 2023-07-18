@@ -8,9 +8,13 @@ import learning.java.minimessageboard.Entities.TbMessageEntity;
 import learning.java.minimessageboard.Services.FileServices;
 import learning.java.minimessageboard.Services.MessageServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,8 +29,8 @@ public class MessageController {
     @Autowired
     private FileServices fileServices;
 
-    @PostMapping("/SaveMessage")
-    public TbMessageEntity createAndSaveMessage(@RequestParam("file") MultipartFile[] files, @Valid @RequestParam String message, @Valid @RequestParam String title, @Valid @RequestParam Long roomId) {
+    @PostMapping("/createMessage")
+    public TbMessageEntity createMessage(@RequestParam("file") MultipartFile[] files, @Valid @RequestParam String message, @Valid @RequestParam String title, @Valid @RequestParam Long roomId) {
 
         TbMessageEntity result = new TbMessageEntity();
         result.setMessage(message);
@@ -38,22 +42,41 @@ public class MessageController {
             List<TBFileEntity> list = new ArrayList();
             fileServices.SaveFile(list, files, result);
         }
-        return messageServices.findMessageById((long) result.getId());
+        return messageServices.findMessageById(result.getId());
     }
 
-    @GetMapping("/findAll")
-    public List<TbMessageEntity> findAll() {
-        return messageServices.findAll();
+    @GetMapping("/findAll/{page}")
+    public Page<TbMessageEntity> findAll(@PathVariable int page, @RequestParam String key, @RequestParam String sortBy, @RequestParam int size, @RequestParam boolean desc) {
+        Sort sort;
+        if (desc)
+            sort = Sort.by(Sort.Direction.DESC, sortBy);
+        else
+            sort = Sort.by(Sort.Direction.ASC, sortBy);
+        PageRequest pageRequest = PageRequest.of(page - 1, size, sort);
+        return messageServices.findAll(pageRequest,key);
     }
 
-    @GetMapping("/findById")
-    public TbMessageEntity findById(@Valid @RequestParam Long messageId) {
+    @GetMapping("/findById/{messageId}")
+    public TbMessageEntity findById(@Valid @PathVariable Long messageId) {
         return messageServices.findMessageById(messageId);
     }
 
-    @GetMapping("/download/downloadFile")
-    public void downloadByMessageId(HttpServletRequest request, HttpServletResponse response, @RequestParam("id") Long id) throws IOException {
-        //下载
-        fileServices.downloadPathFileByMessageId(request, response, id);
+    @PutMapping("/updateMessage/{messageId}")
+    public ResponseEntity<TbMessageEntity> updateMessage(@Valid @PathVariable Long messageId, @RequestBody TbMessageEntity tbMessageEntity) {
+        TbMessageEntity tbMessage = messageServices.findMessageById(messageId);
+        tbMessage.setMessage(tbMessageEntity.getMessage());
+        tbMessage.setTitle(tbMessageEntity.getTitle());
+        return new ResponseEntity<>(messageServices.saveMessage(tbMessage), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/DeleteMessage/{messageId}")
+    public void DeleteMessageById(@PathVariable Long messageId){
+        messageServices.deleteMessageById(messageId);
+    }
+
+
+    @GetMapping("/download/downloadFile/{messageId}")
+    public void downloadByMessageId(HttpServletRequest request, HttpServletResponse response, @PathVariable Long messageId) throws IOException {
+        fileServices.downloadPathFileByMessageId(request, response, messageId);
     }
 }
