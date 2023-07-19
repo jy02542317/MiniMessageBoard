@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,14 +29,12 @@ public class MessageController {
 
     @Autowired
     private FileServices fileServices;
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/createMessage")
     public TbMessageEntity createMessage(@RequestParam("file") MultipartFile[] files, @Valid @RequestParam String message, @Valid @RequestParam String title, @Valid @RequestParam Long roomId) {
-
         TbMessageEntity result = new TbMessageEntity();
         result.setMessage(message);
         result.setTitle(title);
-
 
         messageServices.saveMessage(result);
         if (null != files && files.length > 0) {
@@ -61,6 +60,7 @@ public class MessageController {
         return messageServices.findMessageById(messageId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/updateMessage/{messageId}")
     public ResponseEntity<TbMessageEntity> updateMessage(@Valid @PathVariable Long messageId, @RequestBody TbMessageEntity tbMessageEntity) {
         TbMessageEntity tbMessage = messageServices.findMessageById(messageId);
@@ -68,13 +68,13 @@ public class MessageController {
         tbMessage.setTitle(tbMessageEntity.getTitle());
         return new ResponseEntity<>(messageServices.saveMessage(tbMessage), HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/DeleteMessage/{messageId}")
     public void DeleteMessageById(@PathVariable Long messageId){
         messageServices.deleteMessageById(messageId);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/download/downloadFile/{messageId}")
     public void downloadByMessageId(HttpServletRequest request, HttpServletResponse response, @PathVariable Long messageId) throws IOException {
         fileServices.downloadPathFileByMessageId(request, response, messageId);

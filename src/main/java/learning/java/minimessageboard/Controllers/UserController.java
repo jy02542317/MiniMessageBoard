@@ -51,21 +51,22 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("permitAll()")
     @PostMapping("/SignUp")
     public ResponseEntity<?> createOrSaveUser(@Valid @RequestBody SignUpDto signupDto) {
         return userServices.SaveUser(signupDto);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUser")
     public void deleteUser(@RequestParam Long id) {
         userServices.DeleteUser(id);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUsers")
     public void deleteUsers(@RequestParam Long[] ids) {
         userServices.DeleteUsers(Arrays.stream(ids).toList());
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PostMapping("/getUserById")
     public TbUserEntity getUserById(@RequestParam Long id) {
         return userServices.getTbUserById(id).get();
