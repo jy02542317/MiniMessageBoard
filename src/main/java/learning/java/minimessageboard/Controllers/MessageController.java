@@ -7,12 +7,14 @@ import learning.java.minimessageboard.Entities.TBFileEntity;
 import learning.java.minimessageboard.Entities.TbMessageEntity;
 import learning.java.minimessageboard.Services.FileServices;
 import learning.java.minimessageboard.Services.MessageServices;
+import learning.java.minimessageboard.Services.RoomServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,14 +30,15 @@ public class MessageController {
 
     @Autowired
     private FileServices fileServices;
+    @Autowired
+    private RoomServices roomServices;
 
     @PostMapping("/createMessage")
     public TbMessageEntity createMessage(@RequestParam("file") MultipartFile[] files, @Valid @RequestParam String message, @Valid @RequestParam String title, @Valid @RequestParam Long roomId) {
-
         TbMessageEntity result = new TbMessageEntity();
         result.setMessage(message);
         result.setTitle(title);
-        result.setRoomId(roomId.intValue());
+        result.setTbRoomEntity(roomServices.getRoomById(roomId));
 
         messageServices.saveMessage(result);
         if (null != files && files.length > 0) {
@@ -44,22 +47,23 @@ public class MessageController {
         }
         return messageServices.findMessageById(result.getId());
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/findAll/{page}")
-    public Page<TbMessageEntity> findAll(@PathVariable int page, @RequestParam String key, @RequestParam String sortBy, @RequestParam int size, @RequestParam boolean desc) {
+    public Page<TbMessageEntity> findAll(@PathVariable int page, @RequestParam String key, @RequestParam String sortBy, @RequestParam int size, @RequestParam boolean desc,@RequestParam int roomId) {
         Sort sort;
         if (desc)
             sort = Sort.by(Sort.Direction.DESC, sortBy);
         else
             sort = Sort.by(Sort.Direction.ASC, sortBy);
         PageRequest pageRequest = PageRequest.of(page - 1, size, sort);
-        return messageServices.findAll(pageRequest,key);
+        return messageServices.findAll(pageRequest,key,roomId);
     }
 
     @GetMapping("/findById/{messageId}")
     public TbMessageEntity findById(@Valid @PathVariable Long messageId) {
         return messageServices.findMessageById(messageId);
     }
+
 
     @PutMapping("/updateMessage/{messageId}")
     public ResponseEntity<TbMessageEntity> updateMessage(@Valid @PathVariable Long messageId, @RequestBody TbMessageEntity tbMessageEntity) {

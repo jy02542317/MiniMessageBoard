@@ -1,5 +1,6 @@
 package learning.java.minimessageboard.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,9 +26,10 @@ public class TbMessageEntity extends BaseEntity {
     @Column(name = "Message",  length = 250)
     private String message;
 
-    @Basic
-    @Column(name = "RoomId")
-    private Integer roomId;
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "Room_Id")
+    private TbRoomEntity tbRoomEntity;
 
 
 

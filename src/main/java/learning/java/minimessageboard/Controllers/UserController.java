@@ -9,10 +9,12 @@ import learning.java.minimessageboard.Services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -29,11 +31,13 @@ public class UserController {
     @Autowired
     private JwtServices jwtServices;
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/findAll")
     public List<TbUserEntity> findAll() {
         return userServices.findAll();
     }
 
+    @PreAuthorize("permitAll()")
     @PostMapping("/LogIn")
     public ResponseEntity<?> Login(@Valid @RequestBody LogInDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -41,31 +45,40 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        if(authentication.isAuthenticated()) {
+        if (authentication.isAuthenticated()) {
             return new ResponseEntity<>(jwtServices.generateToken(loginDto), HttpStatus.OK);
-        }
-        else{
+        } else {
             return new ResponseEntity<>("User signed-in failed!.", HttpStatus.OK);
         }
     }
 
+    @PreAuthorize("permitAll()")
     @PostMapping("/SignUp")
     public ResponseEntity<?> createOrSaveUser(@Valid @RequestBody SignUpDto signupDto) {
         return userServices.SaveUser(signupDto);
     }
 
+
+    @PreAuthorize("permitAll()")
+    @PostMapping("/SignUp/{inviteCode}")
+    public ResponseEntity<?> createOrSaveUser(@PathVariable String inviteCode) {
+        return userServices.AutoSignByInviteCode(inviteCode);
+    }
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUser")
     public void deleteUser(@RequestParam Long id) {
         userServices.DeleteUser(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUsers")
     public void deleteUsers(@RequestParam Long[] ids) {
         userServices.DeleteUsers(Arrays.stream(ids).toList());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PostMapping("/getUserById")
-    public TbUserEntity getUserById(@RequestParam Long id) {
-        return userServices.getTbUserById(id).get();
+    public TbUserEntity getUserById(@RequestParam Long id)  {
+        return userServices.getTbUserById(id).orElse(new TbUserEntity());
     }
 }

@@ -25,16 +25,18 @@ public class MessageServices {
         return messageRepository.findById(id).orElse(new TbMessageEntity());
     }
 
-    public Page<TbMessageEntity> findAll(Pageable pageable,String key) {
-        Specification<TbMessageEntity> sp = ( root,  query, cb)->{
+    public Page<TbMessageEntity> findAll(Pageable pageable, String key, int roomId) {
+        Specification<TbMessageEntity> sp = (root, query, cb) -> {
             Path<Object> message = root.get("message");
-            Predicate predicate   = cb.like(message.as(String.class), "%"+key+"%");
-            return predicate;
+            Path<Object> roomID = root.get("roomId");
+            Predicate predicate1 = cb.like(message.as(String.class), "%" + key + "%");
+            Predicate predicate2 = cb.equal(roomID.as(Integer.class), roomId);
+            return cb.and(predicate1, predicate2);
         };
-        return messageRepository.findAll(sp,pageable);
+        return messageRepository.findAll(sp, pageable);
     }
 
-    public void deleteMessageById(Long id){
+    public void deleteMessageById(Long id) {
         messageRepository.deleteById(id);
     }
 

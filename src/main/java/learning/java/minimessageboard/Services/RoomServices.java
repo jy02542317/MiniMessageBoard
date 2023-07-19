@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,9 +29,11 @@ public class RoomServices {
     }
 
     public TbRoomEntity getRoomById(Long Id){
-        return roomRepository.findById(Id).orElse(new TbRoomEntity());
+        return roomRepository.findById(Id).get();
     }
-
+    public Optional<TbRoomEntity> getOnlyRoomById(Long Id){
+        return roomRepository.findById(Id);
+    }
 
     public TbRoomEntity saveRoom(TbRoomEntity tbRoomEntity){
         return roomRepository.save(tbRoomEntity);
