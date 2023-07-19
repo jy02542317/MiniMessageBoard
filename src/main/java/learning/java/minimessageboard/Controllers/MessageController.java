@@ -7,6 +7,7 @@ import learning.java.minimessageboard.Entities.TBFileEntity;
 import learning.java.minimessageboard.Entities.TbMessageEntity;
 import learning.java.minimessageboard.Services.FileServices;
 import learning.java.minimessageboard.Services.MessageServices;
+import learning.java.minimessageboard.Services.RoomServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,12 +30,15 @@ public class MessageController {
 
     @Autowired
     private FileServices fileServices;
-    @PreAuthorize("hasRole('ADMIN')")
+    @Autowired
+    private RoomServices roomServices;
+
     @PostMapping("/createMessage")
     public TbMessageEntity createMessage(@RequestParam("file") MultipartFile[] files, @Valid @RequestParam String message, @Valid @RequestParam String title, @Valid @RequestParam Long roomId) {
         TbMessageEntity result = new TbMessageEntity();
         result.setMessage(message);
         result.setTitle(title);
+        result.setTbRoomEntity(roomServices.getRoomById(roomId));
 
         messageServices.saveMessage(result);
         if (null != files && files.length > 0) {
@@ -43,7 +47,7 @@ public class MessageController {
         }
         return messageServices.findMessageById(result.getId());
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/findAll/{page}")
     public Page<TbMessageEntity> findAll(@PathVariable int page, @RequestParam String key, @RequestParam String sortBy, @RequestParam int size, @RequestParam boolean desc,@RequestParam int roomId) {
         Sort sort;
@@ -60,7 +64,7 @@ public class MessageController {
         return messageServices.findMessageById(messageId);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @PutMapping("/updateMessage/{messageId}")
     public ResponseEntity<TbMessageEntity> updateMessage(@Valid @PathVariable Long messageId, @RequestBody TbMessageEntity tbMessageEntity) {
         TbMessageEntity tbMessage = messageServices.findMessageById(messageId);
@@ -68,13 +72,13 @@ public class MessageController {
         tbMessage.setTitle(tbMessageEntity.getTitle());
         return new ResponseEntity<>(messageServices.saveMessage(tbMessage), HttpStatus.OK);
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
     @DeleteMapping("/DeleteMessage/{messageId}")
     public void DeleteMessageById(@PathVariable Long messageId){
         messageServices.deleteMessageById(messageId);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/download/downloadFile/{messageId}")
     public void downloadByMessageId(HttpServletRequest request, HttpServletResponse response, @PathVariable Long messageId) throws IOException {
         fileServices.downloadPathFileByMessageId(request, response, messageId);

@@ -57,6 +57,13 @@ public class UserController {
     public ResponseEntity<?> createOrSaveUser(@Valid @RequestBody SignUpDto signupDto) {
         return userServices.SaveUser(signupDto);
     }
+
+
+    @PreAuthorize("permitAll()")
+    @PostMapping("/SignUp/{inviteCode}")
+    public ResponseEntity<?> createOrSaveUser(@PathVariable String inviteCode) {
+        return userServices.AutoSignByInviteCode(inviteCode);
+    }
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUser")
     public void deleteUser(@RequestParam Long id) {

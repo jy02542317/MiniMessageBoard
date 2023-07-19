@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true,jsr250Enabled = true)
-public class SecurityConfig {
+public class SecurityConfig  {
     @Autowired
     private AuthFilter authFilter;
     private UserDetailsService userDetailsService;

@@ -1,8 +1,12 @@
 package learning.java.minimessageboard.Services;
 
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Null;
+import learning.java.minimessageboard.Common.MMBConstants;
 import learning.java.minimessageboard.Dto.LogInDto;
 import learning.java.minimessageboard.Dto.SignUpDto;
 import learning.java.minimessageboard.Entities.TbRoleEntity;
+import learning.java.minimessageboard.Entities.TbRoomEntity;
 import learning.java.minimessageboard.Entities.TbUserEntity;
 import learning.java.minimessageboard.Repository.RoleRepository;
 import learning.java.minimessageboard.Repository.UserRepository;
@@ -32,10 +36,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,18 +64,52 @@ public class UserServices implements UserDetailsService{
         }
 
         // create user object
-        TbUserEntity userEntity = new TbUserEntity();
-        userEntity.setUserName(signupDto.getName());
-        userEntity.setPassWord(passwordEncoder(signupDto.getPassword()));
-        if(signupDto.getIsAdmin())
-        {
-            userEntity.setRoleList(roleRepository.findByRoleName("ROLE_ADMIN").stream().toList());
-        }
-        else{
-            userEntity.setRoleList(roleRepository.findByRoleName("ROLE_USER").stream().toList());
-        }
-        userRepository.save(userEntity);
+        createUser(signupDto.getName(),signupDto.getPassword(),signupDto.getIsAdmin(),false,null);
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+    }
+
+    private TbUserEntity createUser(String username, String password, boolean isAdmin, boolean isTemp, @Nullable TbRoomEntity tbRoomEntity){
+        TbUserEntity userEntity = new TbUserEntity();
+        userEntity.setUserName(username);
+        userEntity.setPassWord(passwordEncoder(password));
+        if(isAdmin)
+            userEntity.setRoleList(roleRepository.findByRoleName("ROLE_ADMIN").stream().toList());
+        else
+            userEntity.setRoleList(roleRepository.findByRoleName("ROLE_USER").stream().toList());
+        if(isTemp){
+            userEntity.setValid(false);
+            UUID uuid = UUID.randomUUID();
+            userEntity.setInviteCode(uuid.toString());
+            List<TbRoomEntity> list= new ArrayList<>();
+            list.add(tbRoomEntity);
+            userEntity.setRoomList(list);
+        }
+       return userRepository.save(userEntity);
+    }
+
+    public TbUserEntity saveUser(TbUserEntity tbUserEntity){
+        return userRepository.save(tbUserEntity);
+    }
+
+    public TbUserEntity newTempUser(String username, TbRoomEntity tbRoomEntity){
+        if(userRepository.existsByUserNameAndIsValid(username,true)){
+            TbUserEntity tbUserEntity=new TbUserEntity();
+            tbUserEntity.setUserName("Already exists");
+            return tbUserEntity;
+        }
+        return createUser(username, MMBConstants.Default_Password,false,true,tbRoomEntity);
+    }
+
+    public ResponseEntity<?> AutoSignByInviteCode(String inviteCode){
+       TbUserEntity tbUserEntity= userRepository.findTbUserEntityByInviteCode(inviteCode).orElse(new TbUserEntity());
+       if(tbUserEntity.isValid()){
+           return new ResponseEntity<>("User No need active", HttpStatus.OK);
+       }
+       else{
+           tbUserEntity.setValid(true);
+           userRepository.save(tbUserEntity);
+           return new ResponseEntity<>("User has activate successfully", HttpStatus.OK);
+       }
     }
 
     public void DeleteUsers(List<Long> ids) {

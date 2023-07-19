@@ -24,8 +24,7 @@ public class FileController {
 
     @Autowired
     private MessageServices messageServices;
-    @PreAuthorize("hasRole('ADMIN')")
-    @ResponseBody
+
     @PostMapping(value = "/uploadFile")
     public List<TBFileEntity> uploadFile(@RequestParam("file") MultipartFile[] files, @RequestParam("message_id") Long message_id) {
         List<TBFileEntity> list = new ArrayList<>();
@@ -36,7 +35,7 @@ public class FileController {
         }
         return list;
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/download/downloadFile")
     public void download(HttpServletRequest request, HttpServletResponse response,@RequestParam("id") Long id) throws IOException {
         //下载

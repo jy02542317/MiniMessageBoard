@@ -13,6 +13,10 @@ public interface UserRepository extends JpaRepository<TbUserEntity, Long> {
 
     Boolean existsByUserName(String username);
 
+    Boolean existsByUserNameAndIsValid(String username,Boolean IsValid);
+
+    Optional<TbUserEntity> findTbUserEntityByInviteCode(String InviteCode);
+
     @Query(value = "select Top 1 a.* from TbUser a where (a.username= :username or a.Email=:email) and a.IsValid=:IsValid", nativeQuery = true)
     Optional<TbUserEntity> findByUserNameOrEmailAndIsValid(String username,String email,Boolean IsValid);
 
