@@ -122,4 +122,12 @@ public class FileServices {
         zos.close();
         downloadFile(zipFile.getName(),zipFile,response);
     }
+
+    public void deleteFileById(Long Id) throws IOException{
+        String filePath=fileRepository.findById(Id).get().getFilename();
+        File file=new File(filePath);
+        fileRepository.deleteById(Id);
+        if(file.exists())
+            file.delete();
+    }
 }

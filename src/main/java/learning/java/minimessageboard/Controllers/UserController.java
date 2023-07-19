@@ -9,6 +9,7 @@ import learning.java.minimessageboard.Services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,11 +30,13 @@ public class UserController {
     @Autowired
     private JwtServices jwtServices;
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/findAll")
     public List<TbUserEntity> findAll() {
         return userServices.findAll();
     }
 
+    @PreAuthorize("permitAll()")
     @PostMapping("/LogIn")
     public ResponseEntity<?> Login(@Valid @RequestBody LogInDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -41,10 +44,9 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        if(authentication.isAuthenticated()) {
+        if (authentication.isAuthenticated()) {
             return new ResponseEntity<>(jwtServices.generateToken(loginDto), HttpStatus.OK);
-        }
-        else{
+        } else {
             return new ResponseEntity<>("User signed-in failed!.", HttpStatus.OK);
         }
     }

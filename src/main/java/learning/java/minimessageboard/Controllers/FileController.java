@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,5 +40,10 @@ public class FileController {
     public void download(HttpServletRequest request, HttpServletResponse response,@RequestParam("id") Long id) throws IOException {
         //下载
          fileServices.downloadPathFile(request, response,id);
+    }
+
+    @DeleteMapping("/deleteFile/{id}")
+    public void deleteFileById(@PathVariable Long id) throws IOException {
+        fileServices.deleteFileById(id);
     }
 }

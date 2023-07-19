@@ -68,9 +68,10 @@ public class UserServices implements UserDetailsService{
         userEntity.setPassWord(passwordEncoder(signupDto.getPassword()));
         if(signupDto.getIsAdmin())
         {
-
-            List<TbRoleEntity> roles = roleRepository.findByRoleName("ROLE_ADMIN").stream().toList();
-            userEntity.setRoleList(roles);
+            userEntity.setRoleList(roleRepository.findByRoleName("ROLE_ADMIN").stream().toList());
+        }
+        else{
+            userEntity.setRoleList(roleRepository.findByRoleName("ROLE_USER").stream().toList());
         }
         userRepository.save(userEntity);
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
@@ -84,14 +85,10 @@ public class UserServices implements UserDetailsService{
         userRepository.deleteById(id);
     }
 
-    public List<TbUserEntity> ExistUser(TbUserEntity tbUserEntity) {
-        List<TbUserEntity> userEntityList = userRepository.findTbUserEntityByUserNameAndPassWordAndValid(tbUserEntity.getUserName(), tbUserEntity.getPassWord(), true);
-       return userEntityList;
-    }
-
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        TbUserEntity user = userRepository.findByUserNameOrEmail(usernameOrEmail, usernameOrEmail)
+        Boolean isValid=true;
+        TbUserEntity user = userRepository.findByUserNameOrEmailAndIsValid(usernameOrEmail, usernameOrEmail,isValid)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with username or email: "+ usernameOrEmail));
 

@@ -35,7 +35,7 @@ public class MessageController {
         TbMessageEntity result = new TbMessageEntity();
         result.setMessage(message);
         result.setTitle(title);
-        result.setRoomId(roomId.intValue());
+
 
         messageServices.saveMessage(result);
         if (null != files && files.length > 0) {
@@ -46,14 +46,14 @@ public class MessageController {
     }
 
     @GetMapping("/findAll/{page}")
-    public Page<TbMessageEntity> findAll(@PathVariable int page, @RequestParam String key, @RequestParam String sortBy, @RequestParam int size, @RequestParam boolean desc) {
+    public Page<TbMessageEntity> findAll(@PathVariable int page, @RequestParam String key, @RequestParam String sortBy, @RequestParam int size, @RequestParam boolean desc,@RequestParam int roomId) {
         Sort sort;
         if (desc)
             sort = Sort.by(Sort.Direction.DESC, sortBy);
         else
             sort = Sort.by(Sort.Direction.ASC, sortBy);
         PageRequest pageRequest = PageRequest.of(page - 1, size, sort);
-        return messageServices.findAll(pageRequest,key);
+        return messageServices.findAll(pageRequest,key,roomId);
     }
 
     @GetMapping("/findById/{messageId}")
