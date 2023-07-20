@@ -72,7 +72,8 @@ public class RoomController {
         List<TbRoomEntity> list= tbUserEntity.getRoomList();
         if(list==null)
             list=new ArrayList<>();
-        list.add(tbRoomEntity);
+        else if(!list.contains(tbRoomEntity))
+            list.add(tbRoomEntity);
         return userServices.saveUser(tbUserEntity);
     }
 

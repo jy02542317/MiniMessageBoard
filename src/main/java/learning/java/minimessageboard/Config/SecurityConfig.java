@@ -10,8 +10,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,16 +48,21 @@ public class SecurityConfig  {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(authFilter, BasicAuthenticationFilter.class);
+
         http.csrf().disable()
                 .authorizeRequests().requestMatchers("/api/User/**").permitAll()
                 .requestMatchers("/api/Room/**").hasRole("ADMIN")
                 .requestMatchers("/api/Message/**").permitAll()
-                .requestMatchers("/api/File/**").permitAll()
+                .requestMatchers("/api/File/**").hasAnyRole("ADMIN","USER")
+                .requestMatchers("/v3/**").permitAll()
+                .requestMatchers("/context-path/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         return http.build();
     }
+
+
 
 }

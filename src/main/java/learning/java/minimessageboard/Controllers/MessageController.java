@@ -47,7 +47,7 @@ public class MessageController {
         }
         return messageServices.findMessageById(result.getId());
     }
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+
     @GetMapping("/findAll/{page}")
     public Page<TbMessageEntity> findAll(@PathVariable int page, @RequestParam String key, @RequestParam String sortBy, @RequestParam int size, @RequestParam boolean desc,@RequestParam int roomId) {
         Sort sort;

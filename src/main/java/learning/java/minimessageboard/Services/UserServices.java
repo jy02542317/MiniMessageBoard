@@ -92,9 +92,13 @@ public class UserServices implements UserDetailsService{
     }
 
     public TbUserEntity newTempUser(String username, TbRoomEntity tbRoomEntity){
+        TbUserEntity tbUserEntity;
         if(userRepository.existsByUserNameAndIsValid(username,true)){
-            TbUserEntity tbUserEntity=new TbUserEntity();
+            tbUserEntity=new TbUserEntity();
             tbUserEntity.setUserName("Already exists");
+            return tbUserEntity;
+        }else if(userRepository.existsByUserNameAndIsValid(username,false)){
+            tbUserEntity=userRepository.findTbUserEntityByUserName(username).get();
             return tbUserEntity;
         }
         return createUser(username, MMBConstants.Default_Password,false,true,tbRoomEntity);
