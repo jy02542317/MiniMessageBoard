@@ -52,10 +52,11 @@ public class SecurityConfig  {
         http.csrf().disable()
                 .authorizeRequests().requestMatchers("/api/User/**").permitAll()
                 .requestMatchers("/api/Room/**").hasRole("ADMIN")
-                .requestMatchers("/api/Message/**").permitAll()
+                .requestMatchers("/api/Message/**").hasAnyRole("ADMIN","USER")
                 .requestMatchers("/api/File/**").hasAnyRole("ADMIN","USER")
                 .requestMatchers("/v3/**").permitAll()
-                .requestMatchers("/context-path/swagger-ui.html").permitAll()
+                .requestMatchers("/swagger-ui.html").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
