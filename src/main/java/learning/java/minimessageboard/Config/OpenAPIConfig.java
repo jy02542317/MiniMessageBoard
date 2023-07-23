@@ -22,7 +22,7 @@ public class OpenAPIConfig {
         return new OpenAPI().info(new Info()
                         .title("MiniMessageBoard API")
                         .description("MiniMessageBoard接口文档说明")
-                        .version("v0.0.1-SNAPSHOT"))
+                        .version("v0.1"))
                         .externalDocs(documentation())
                       /*  .license(new License().name("YiYi项目博客专栏")
                                 .url("https://blog.csdn.net/weihao0240/category_12166012.html")))
@@ -45,21 +45,7 @@ public class OpenAPIConfig {
     public GroupedOpenApi UserApi() {
         return GroupedOpenApi.builder()
                 .group("user接口")
-                .pathsToMatch("/api/User/**")
+                .pathsToMatch("/api/User/**","/api/Room/**","/api/Message/**","/api/File/**")
                 .build();
     }
-
-    /**
-     * sys 分组
-     *
-     * @return sys分组接口
-     */
-   /* @Bean
-    public GroupedOpenApi adminApi() {
-        return GroupedOpenApi.builder()
-                .group("room接口")
-                .pathsToMatch("/api/Room/**")
-                .build();
-    }*/
-
 }

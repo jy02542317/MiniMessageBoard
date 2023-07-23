@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-@Tag(name = "用户接口", description = "定义用户接口")
+@Tag(name = "1. 用户模块", description = "定义用户接口")
 @RestController
 @RequestMapping("/api/User")
 public class UserController {
@@ -42,11 +42,6 @@ public class UserController {
         return userServices.findAll();
     }
     @Operation(summary = "登陆接口", description = "输入用户信息进行登陆")
-    @Parameters({
-            @Parameter(name = "username", description = "登录用户", required = true),
-            @Parameter(name = "password", description = "密码", required = true)
-    })
-
     @PreAuthorize("permitAll()")
     @PostMapping("/LogIn")
     public ResponseEntity<?> Login(@Valid @RequestBody LogInDto loginDto) {
@@ -61,20 +56,21 @@ public class UserController {
             return new ResponseEntity<>("User signed-in failed!.", HttpStatus.OK);
         }
     }
-
+    @Operation(summary = "注册接口", description = "输入用户信息进行注册")
     @PreAuthorize("permitAll()")
     @PostMapping("/SignUp")
     public ResponseEntity<?> createOrSaveUser(@Valid @RequestBody SignUpDto signupDto) {
         return userServices.SaveUser(signupDto);
     }
 
-
+    @Operation(summary = "注册接口", description = "通过inviteCode进行登陆")
     @PreAuthorize("permitAll()")
     @PostMapping("/SignUp/{inviteCode}")
     public ResponseEntity<?> createOrSaveUser(@PathVariable String inviteCode) {
         return userServices.AutoSignByInviteCode(inviteCode);
     }
     @Operation(summary = "通过ID删除用户", security = @SecurityRequirement(name = "Authorization"))
+    @Parameters({@Parameter(name="id",description = "用户ID",required = true)})
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUser")
     public void deleteUser(@RequestParam Long id) {
@@ -82,13 +78,16 @@ public class UserController {
     }
 
     @Operation(summary = "通过ID批量删除用户", security = @SecurityRequirement(name = "Authorization"))
+    @Parameters({@Parameter(name="ids",description = "用户ID",required = true)})
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUsers")
     public void deleteUsers(@RequestParam Long[] ids) {
         userServices.DeleteUsers(Arrays.stream(ids).toList());
     }
+
     @Operation(summary = "通过ID查找用户", security = @SecurityRequirement(name = "Authorization"))
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @Parameters({@Parameter(name="id",description = "用户ID",required = true)})
     @PostMapping("/getUserById")
     public TbUserEntity getUserById(@RequestParam Long id)  {
         return userServices.getTbUserById(id).orElse(new TbUserEntity());

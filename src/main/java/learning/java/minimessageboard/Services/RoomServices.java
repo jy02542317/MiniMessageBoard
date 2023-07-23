@@ -2,6 +2,8 @@ package learning.java.minimessageboard.Services;
 
 import learning.java.minimessageboard.Entities.TbRoomEntity;
 import learning.java.minimessageboard.Repository.RoomRepository;
+import learning.java.minimessageboard.Repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ import java.util.Optional;
 @Transactional
 public class RoomServices {
     private final RoomRepository roomRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public RoomServices(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
@@ -35,8 +40,14 @@ public class RoomServices {
         return roomRepository.findById(Id);
     }
 
-    public TbRoomEntity saveRoom(TbRoomEntity tbRoomEntity){
+    public TbRoomEntity updateRoom(TbRoomEntity tbRoomEntity){
         return roomRepository.save(tbRoomEntity);
+    }
+
+    public TbRoomEntity createRoom(TbRoomEntity tbRoomEntity){
+        TbRoomEntity result= roomRepository.save(tbRoomEntity);
+        roomRepository.updateRelationAllAdmin(result.getId());
+        return result;
     }
 
     public void deleteRoom(Long Id){

@@ -1,5 +1,6 @@
 package learning.java.minimessageboard.Controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import learning.java.minimessageboard.Entities.TBFileEntity;
@@ -14,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+@Tag(name = "4. 文件模块", description = "MessageRoom的增删改查")
 @RestController
 @Slf4j
 @RequestMapping("/api/File")

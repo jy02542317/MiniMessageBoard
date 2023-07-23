@@ -1,5 +1,8 @@
 package learning.java.minimessageboard.Controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import learning.java.minimessageboard.Common.MMBConstants;
 import learning.java.minimessageboard.Entities.TbRoomEntity;
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+@Tag(name = "2. 消息室接口", description = "MessageRoom的增删改查")
 @RestController
 @RequestMapping("/api/Room")
 public class RoomController {
@@ -33,10 +36,11 @@ public class RoomController {
         return roomServices.findAll();
     }
 
+    @Operation(summary = "1. 新增消息室", security = @SecurityRequirement(name = "Authorization"))
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/saveRoom")
-    public TbRoomEntity saveRoom(@Valid @RequestBody TbRoomEntity tbRoomEntity) {
-        return roomServices.saveRoom(tbRoomEntity);
+    @PostMapping("/createRoom")
+    public TbRoomEntity createRoom(@Valid @RequestBody TbRoomEntity tbRoomEntity) {
+        return roomServices.createRoom(tbRoomEntity);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")

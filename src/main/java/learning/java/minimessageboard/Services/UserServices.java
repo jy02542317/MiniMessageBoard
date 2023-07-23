@@ -116,6 +116,10 @@ public class UserServices implements UserDetailsService{
        }
     }
 
+    public Optional<TbUserEntity> getTbUserEntityByUserName(String username) {
+        return userRepository.findTbUserEntityByUserNameAndIsValid(username,true);
+    }
+
     public void DeleteUsers(List<Long> ids) {
         userRepository.deleteAllById(ids);
     }
