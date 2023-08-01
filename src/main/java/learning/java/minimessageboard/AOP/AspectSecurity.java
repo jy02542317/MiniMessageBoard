@@ -35,36 +35,32 @@ public class AspectSecurity {
     // 定义一个通知,在执行pointFn这个方法之前（切入进去之前），我们需要执行check方法
     @Before("pointFn()")
     public void check() {
-        //获取RequestAttributes
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        //从获取RequestAttributes中获取HttpServletRequest的信息
-        HttpServletRequest httpServletRequest = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
-
-        String token = httpServletRequest.getHeader("Authorization");
-        token = token.substring(7);
-        String username=jwtServices.extractUsername(token);
-        TbUserEntity tbUserEntity=userServices.getTbUserEntityByUserName(username).get();
-        String sRoomId=(httpServletRequest.getParameter("roomId"));
-
-        if(!sRoomId.equals(null)){
-           int roomId= Integer.parseInt(sRoomId);
-
-           List<TbRoomEntity> list=tbUserEntity.getRoomList();
-           boolean result=false;
-           for(TbRoomEntity tbRoomEntity:list){
-                if(tbRoomEntity.getId().equals(roomId)){
-                    result=true;
-                }
-           }
-           if(!result){
-               log.info("该用户对这个room没有权限");
-               return;
-           }
-        }
-
-
-
-
+//        //获取RequestAttributes
+//        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+//        //从获取RequestAttributes中获取HttpServletRequest的信息
+//        HttpServletRequest httpServletRequest = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
+//
+//        String token = httpServletRequest.getHeader("Authorization");
+//        token = token.substring(7);
+//        String username=jwtServices.extractUsername(token);
+//        TbUserEntity tbUserEntity=userServices.getTbUserEntityByUserName(username).get();
+//        String sRoomId=(httpServletRequest.getParameter("roomId"));
+//
+//        if(sRoomId!=null&&!sRoomId.equals("")){
+//           int roomId= Integer.parseInt(sRoomId);
+//
+//           List<TbRoomEntity> list=tbUserEntity.getRoomList();
+//           boolean result=false;
+//           for(TbRoomEntity tbRoomEntity:list){
+//                if(tbRoomEntity.getId().equals(roomId)){
+//                    result=true;
+//                }
+//           }
+//           if(!result){
+//               log.info("该用户对这个room没有权限");
+//               return;
+//           }
+//        }
         log.info("对MessageController做check检查");
     }
 }
